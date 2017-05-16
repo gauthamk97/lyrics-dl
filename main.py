@@ -4,7 +4,6 @@ import urllib, requests, json, os, eyed3
 flag=False
 searchEngineID='013005384117311148169%3A7rehj54nzye'
 APIKey='AIzaSyAcBWajtXvUDXlv08CtFr7mJamWugAcxmM'
-print
 
 for subdir, dir, files in os.walk(os.getcwd()):
     for fileName in files:
