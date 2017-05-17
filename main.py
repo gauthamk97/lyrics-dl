@@ -5,68 +5,71 @@ flag=False
 searchEngineID='013005384117311148169%3A7rehj54nzye'
 APIKey='AIzaSyAcBWajtXvUDXlv08CtFr7mJamWugAcxmM'
 
+songList = []
 for subdir, dir, files in os.walk(os.getcwd()):
     for fileName in files:
         if fileName.endswith(".mp3"):
             path=subdir+'/'+fileName
-            try:
-                audio = eyed3.load(path)
-            except ValueError:
-                print "Encoding problem with "+fileName
-                break
-            
-            try:
-                band = audio.tag.artist
-                song = audio.tag.title
-            except AttributeError:
-                print 'Artist/Song information missing for '+fileName
-                continue
+            songList.append(path)
 
-            tempBand = band
-            tempSong = song
-            band=band.lower().replace(' ','-')
-            song=song.lower().replace(' ','-')
+for path in songList:
+    try:
+        audio = eyed3.load(path)
+    except ValueError:
+        print "Encoding problem with "+path
+        continue
 
-            try:
-                existingLyrics = audio.tag.lyrics[0]
-                print "Lyrics already exist for "+tempBand+" - "+tempSong
-                continue
+    try:
+        band = audio.tag.artist
+        song = audio.tag.title
+        tempBand = band
+        tempSong = song
+        band=band.lower().replace(' ','-')
+        song=song.lower().replace(' ','-')
+    except AttributeError:
+        print 'Artist/Song information missing for '+path
+        continue
 
-            except IndexError:
-                #Lyrics don't exist. Hence finding it.
-                lyrics=u""
+    try:
+        existingLyrics = audio.tag.lyrics[0]
+        print "Lyrics already exist for "+tempBand+" - "+tempSong
+        continue
 
-                print "Getting lyrics for "+tempBand+" - "+tempSong
+    except IndexError:
+        #Lyrics don't exist. Hence finding it.
+        lyrics=u""
 
-                searchUrl='https://www.googleapis.com/customsearch/v1?q='+band+'+'+song+'&cx='+searchEngineID+'&num=1&key='+APIKey
-                a = requests.get(searchUrl)
-                b = json.loads(a.text)
+        print "Getting lyrics for "+tempBand+" - "+tempSong
 
-                if b.has_key('items'):
-                    url = b['items'][0]['link']
+        searchUrl='https://www.googleapis.com/customsearch/v1?q='+band+'+'+song+'&cx='+searchEngineID+'&num=1&key='+APIKey
+        a = requests.get(searchUrl)
+        b = json.loads(a.text)
 
-                    mainPage=urllib.urlopen(url).read()
-                    soup = BeautifulSoup(mainPage, 'html.parser')
+        if b.has_key('items'):
+            url = b['items'][0]['link']
 
-                    for div in soup.find_all('div'):
-                        if div.has_attr('id'):
-                            if div['id']=='lyrics-body-text':
-                                flag=True
-                                mainDiv=div
-                                for para in mainDiv.find_all('p'):
-                                    lyrics+=para.text
-                                    lyrics+='\r\r'
-                                break
+            mainPage=urllib.urlopen(url).read()
+            soup = BeautifulSoup(mainPage, 'html.parser')
 
-                    if flag==False:
-                        print "Couldn't find lyrics for "+tempBand+" - "+tempSong+"\n"
-                    else:
-                        lyrics = lyrics[:len(lyrics)-2]
-                        audio.tag.lyrics.set(lyrics)
-                        try:
-                            audio.tag.save()
-                        except NotImplementedError:
-                            print "Error - ID3v2.2 for "+tempBand+" - "+tempSong+"\n"
-                        
-                else:
-                    print "Couldn't find lyrics for "+tempBand+" - "+tempSong+"\n"
+            for div in soup.find_all('div'):
+                if div.has_attr('id'):
+                    if div['id']=='lyrics-body-text':
+                        flag=True
+                        mainDiv=div
+                        for para in mainDiv.find_all('p'):
+                            lyrics+=para.text
+                            lyrics+='\r\r'
+                        break
+
+            if flag==False:
+                print "Couldn't find lyrics for "+tempBand+" - "+tempSong+"\n"
+            else:
+                lyrics = lyrics[:len(lyrics)-2]
+                audio.tag.lyrics.set(lyrics)
+                try:
+                    audio.tag.save()
+                except NotImplementedError:
+                    print "Error - ID3v2.2 for "+tempBand+" - "+tempSong+"\n"
+                
+        else:
+            print "Couldn't find lyrics for "+tempBand+" - "+tempSong+"\n"
