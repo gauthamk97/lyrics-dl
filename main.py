@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib, requests, json, os, eyed3
 
+eyed3.log.setLevel("ERROR") #only print errors, not wornings
 flag=False
 searchEngineID='013005384117311148169%3A7rehj54nzye'
 APIKey='AIzaSyAcBWajtXvUDXlv08CtFr7mJamWugAcxmM'
@@ -62,14 +63,14 @@ for path in songList:
                         break
 
             if flag==False:
-                print "Couldn't find lyrics for "+tempBand+" - "+tempSong+"\n"
+                print "Couldn't find lyrics for "+tempBand+" - "+tempSong
             else:
                 lyrics = lyrics[:len(lyrics)-2]
                 audio.tag.lyrics.set(lyrics)
                 try:
                     audio.tag.save()
                 except NotImplementedError:
-                    print "Error - ID3v2.2 for "+tempBand+" - "+tempSong+"\n"
+                    print "Error - ID3v2.2 for "+tempBand+" - "+tempSong
                 
         else:
-            print "Couldn't find lyrics for "+tempBand+" - "+tempSong+"\n"
+            print "Couldn't find lyrics for "+tempBand+" - "+tempSong
