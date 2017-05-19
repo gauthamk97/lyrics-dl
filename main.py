@@ -6,6 +6,7 @@ flag=False
 searchEngineID='013005384117311148169%3A7rehj54nzye'
 APIKey='AIzaSyAcBWajtXvUDXlv08CtFr7mJamWugAcxmM'
 
+forbiddenArtists = ['TamilBeat.Com', 'www.Songs.PK', 'Hans Zimmer']
 songList = []
 for subdir, dir, files in os.walk(os.getcwd()):
     for fileName in files:
@@ -22,6 +23,9 @@ for path in songList:
 
     try:
         band = audio.tag.artist
+        if band in forbiddenArtists:
+            continue
+            
         song = audio.tag.title
         tempBand = band
         tempSong = song
