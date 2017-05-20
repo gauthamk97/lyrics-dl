@@ -6,7 +6,7 @@ flag=False
 searchEngineID='013005384117311148169%3A7rehj54nzye'
 APIKey='AIzaSyAcBWajtXvUDXlv08CtFr7mJamWugAcxmM'
 
-forbiddenArtists = ['TamilBeat.Com', 'www.Songs.PK', 'Hans Zimmer']
+forbiddenArtists = ['TamilBeat.Com', 'www.Songs.PK', 'Hans Zimmer', 'The Indian Jam Project']
 songList = []
 for subdir, dir, files in os.walk(os.getcwd()):
     for fileName in files:
@@ -18,7 +18,7 @@ for path in songList:
     try:
         audio = eyed3.load(path)
     except ValueError:
-        print "Encoding problem with "+path
+        #print "Encoding problem with "+path
         continue
 
     try:
@@ -32,12 +32,12 @@ for path in songList:
         band=band.lower().replace(' ','-')
         song=song.lower().replace(' ','-')
     except AttributeError:
-        print 'Artist/Song information missing for '+path
+        #print 'Artist/Song information missing for '+path
         continue
 
     try:
         existingLyrics = audio.tag.lyrics[0]
-        print "Lyrics already exist for "+tempBand+" - "+tempSong
+        #print "Lyrics already exist for "+tempBand+" - "+tempSong
         continue
 
     except IndexError:
@@ -67,14 +67,15 @@ for path in songList:
                         break
 
             if flag==False:
-                print "Couldn't find lyrics for "+tempBand+" - "+tempSong
+                print "Couldn't find lyrics for "+tempBand+" - "+tempSong+"\n"
             else:
                 lyrics = lyrics[:len(lyrics)-2]
                 audio.tag.lyrics.set(lyrics)
                 try:
                     audio.tag.save()
+                    print "Found lyrics for "+tempBand+" - "+tempSong+"\n"
                 except NotImplementedError:
-                    print "Error - ID3v2.2 for "+tempBand+" - "+tempSong
+                    print "Error - ID3v2.2 for "+tempBand+" - "+tempSong+"\n"
                 
         else:
-            print "Couldn't find lyrics for "+tempBand+" - "+tempSong
+            print "Couldn't find lyrics for "+tempBand+" - "+tempSong+"\n"
