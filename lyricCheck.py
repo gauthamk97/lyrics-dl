@@ -20,5 +20,11 @@ for subdir, dir, files in os.walk(os.getcwd()):
             except IndexError:
                 continue
 
-for item in dict.keys():
-    print dict[item]
+artists = dict.keys()
+artists.sort()
+
+for item in artists:
+    print item,' : '
+    for song in dict[item]:
+        print '\t',song
+    print
