@@ -1,0 +1,11 @@
+beautifulsoup4==4.6.0
+certifi==2017.7.27.1
+chardet==3.0.4
+eyeD3==0.8
+idna==2.5
+pathlib==1.0.1
+requests==2.18.3
+scandir==1.5
+six==1.10.0
+urllib==1.21.1
+urllib3==1.22
