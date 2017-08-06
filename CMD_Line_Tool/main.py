@@ -18,7 +18,12 @@ def maingl():
 
     #First Attempt - AZ Lyrics
     try:
-        url = searchSoup.find_all('td')[0].a['href']
+        alltds = searchSoup.find_all('td')
+        url = alltds[0].a['href'] #Will invoke Index Error search results empty
+        for td in alltds:
+            if td.has_attr('class'):
+                url = td.a['href']
+                break
         lyricsFound=True
     except IndexError:
         click.echo("Couldn't find that song on AZLyrics.")

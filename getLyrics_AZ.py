@@ -11,7 +11,12 @@ searchSoup = BeautifulSoup(searchPage, 'html.parser')
 
 #URL of lyrics page
 try:
-    url = searchSoup.find_all('td')[0].a['href']
+    alltds = searchSoup.find_all('td')
+    url = alltds[0].a['href'] #Will invoke Index Error if problem
+    for td in alltds:
+        if td.has_attr('class'):
+            url = td.a['href']
+            break
 except IndexError:
     print "Couldn't find that song"
     exit()
