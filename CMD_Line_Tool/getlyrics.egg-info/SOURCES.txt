@@ -1,0 +1,6 @@
+getlyrics.egg-info/PKG-INFO
+getlyrics.egg-info/SOURCES.txt
+getlyrics.egg-info/dependency_links.txt
+getlyrics.egg-info/entry_points.txt
+getlyrics.egg-info/requires.txt
+getlyrics.egg-info/top_level.txt
