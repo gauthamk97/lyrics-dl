@@ -3,9 +3,11 @@ from bs4 import BeautifulSoup
 import urllib, requests, json, os, eyed3
 
 @click.command()
+@click.option('-a',is_flag=True,help='If FILES is provided, this option will not ask the user to input artist and song details when it\'s absent in the file\'s metadata. Instead, the file will be skipped.')
+@click.option('-o',is_flag=True,help='If FILES is provided, this option will suppress the output of the obtained lyrics on to Terminal')
 @click.option('-s',is_flag=True,help='If FILES is provided, this option will save the obtained lyrics in the file\'s metadata')
 @click.argument('files',nargs=-1, type=click.File('rw'))
-def maingl(files,s):
+def maingl(files,a,o,s):
     """Welcome to getlyrics.
     
     Enter artist and song name when prompted, and watch the magic happen :)"""
@@ -33,8 +35,20 @@ def maingl(files,s):
                 artist=artist.lower().replace(' ','-') #for query purposes
                 song=song.lower().replace(' ','-') #for query purposes
             except AttributeError:
-                click.echo('Artist/Song information missing for '+path)
-                continue
+                if a:
+                    click.echo('Artist/Song information missing for '+path+'. Moving on to next song')
+                    continue
+                else:
+                    click.echo('Artist/Song information missing for '+path+'. Please enter details :-')
+                    artist = raw_input('Enter Artist Name : ')
+                    song = raw_input('Enter Song Name : ')
+                    tempArtist = artist
+                    tempSong = song
+                    artist=artist.lower().replace(' ','-') #for query purposes
+                    song=song.lower().replace(' ','-') #for query purposes
+
+                    audio.tag.artist = tempArtist.decode('utf-8')
+                    audio.tag.title = tempSong.decode('utf-8')
 
             click.echo("Finding lyrics for "+tempArtist+" - "+tempSong)
             lyrics = findlyrics(artist, song)
@@ -53,10 +67,12 @@ def maingl(files,s):
                 else:
                     break
                     
-            click.echo('\n'+tempArtist.upper()+" - "+tempSong.upper()+" LYRICS\n"+lyrics)
+            if not o:
+                click.echo('\n'+tempArtist.upper()+" - "+tempSong.upper()+" LYRICS\n"+lyrics+'\n')
             if s:
                 #Saves lyrics in mp3 metadata
                 audio.tag.lyrics.set(lyrics)
+
                 try:
                     audio.tag.save()
                     click.echo("Saved lyrics for "+tempArtist+" - "+tempSong+"\n")
