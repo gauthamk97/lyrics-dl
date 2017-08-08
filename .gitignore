@@ -1,3 +1,4 @@
 lyrenv/
 *.pyc
 .DS_Store
+*.mp3
