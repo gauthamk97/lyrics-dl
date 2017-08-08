@@ -3,8 +3,9 @@ from bs4 import BeautifulSoup
 import urllib, requests, json, os, eyed3
 
 @click.command()
+@click.option('-s',is_flag=True,help='If FILES is provided, this option will save the obtained lyrics in the file\'s metadata')
 @click.argument('files',nargs=-1, type=click.File('rw'))
-def maingl(files):
+def maingl(files,s):
     """Welcome to getlyrics.
     
     Enter artist and song name when prompted, and watch the magic happen :)"""
@@ -37,7 +38,30 @@ def maingl(files):
 
             click.echo("Finding lyrics for "+tempArtist+" - "+tempSong)
             lyrics = findlyrics(artist, song)
+
+            #Removes newline characters from the beginning of lyrics
+            for char in lyrics:
+                if char=='\n' or char=='\r':
+                    lyrics = lyrics[1:]
+                else:
+                    break
+
+            #Removes newline characters from the end of lyrics
+            for i in range(len(lyrics)-1,0,-1):
+                if lyrics[i]=='\n' or lyrics[i]=='\r':
+                    lyrics = lyrics[:len(lyrics)-1]
+                else:
+                    break
+                    
             click.echo('\n'+tempArtist.upper()+" - "+tempSong.upper()+" LYRICS\n"+lyrics)
+            if s:
+                #Saves lyrics in mp3 metadata
+                audio.tag.lyrics.set(lyrics)
+                try:
+                    audio.tag.save()
+                    click.echo("Saved lyrics for "+tempArtist+" - "+tempSong+"\n")
+                except NotImplementedError:
+                    click.echo("Error - ID3v2.2 for "+tempArtist+" - "+tempSong+"\n")
 
     else:
 		artist = raw_input('Enter Artist Name : ')
@@ -78,7 +102,7 @@ def findlyrics(artist, song):
                     mainDiv = div
                     for div in mainDiv.find_all('div'):
                         if not div.has_attr('class'):
-                            return div.text[2:] #Returns Lyrics from AZLyrics
+                            return div.text#Returns Lyrics from AZLyrics
                     break
 
     else:
@@ -111,7 +135,6 @@ def findlyrics(artist, song):
                 click.echo("Couldn't find lyrics on MetroLyrics")
                 return
             else:
-                lyrics = lyrics[:len(lyrics)-1] #Removes \n from the end
                 return lyrics
         else:
                 click.echo("Couldn't find lyrics through Google's API")
