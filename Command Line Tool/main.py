@@ -3,11 +3,12 @@ from bs4 import BeautifulSoup
 import urllib, requests, json, os, eyed3
 
 @click.command()
-@click.option('-a',is_flag=True,help='If FILES is provided, this option will not ask the user to input artist and song details when it\'s absent in the file\'s metadata. Instead, the file will be skipped.')
+@click.option('-a',is_flag=True,help='If FILES is provided, this option will not ask the user to input artist and song details when it\'s absent in the file\'s metadata. Instead, the file will be skipped')
+@click.option('-l',is_flag=True,help='If FILES is provided, this option will skip songs for which lyrics already exists')
 @click.option('-o',is_flag=True,help='If FILES is provided, this option will suppress the output of the obtained lyrics on to Terminal')
 @click.option('-s',is_flag=True,help='If FILES is provided, this option will save the obtained lyrics in the file\'s metadata')
 @click.argument('files',nargs=-1, type=click.File('rw'))
-def maingl(files,a,o,s):
+def maingl(files,a,l,o,s):
     """Welcome to getlyrics.
     
     Enter artist and song name when prompted, and watch the magic happen :)"""
@@ -49,8 +50,14 @@ def maingl(files,a,o,s):
 
                     audio.tag.artist = tempArtist.decode('utf-8')
                     audio.tag.title = tempSong.decode('utf-8')
-
-            click.echo("Finding lyrics for "+tempArtist+" - "+tempSong)
+            
+            #Skipping songs if lyrics are already present
+            if l:
+                if audio.tag.lyrics[0]:
+                    click.echo('Lyrics already exist for '+tempArtist+' - '+tempSong)
+                    continue
+                    
+            click.echo('Finding lyrics for '+tempArtist+' - '+tempSong)
             lyrics = findlyrics(artist, song)
 
             #Removes newline characters from the beginning of lyrics
