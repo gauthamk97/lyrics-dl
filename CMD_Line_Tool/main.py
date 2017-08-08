@@ -9,6 +9,8 @@ def maingl(files):
     
     Enter artist and song name when prompted, and watch the magic happen :)"""
 
+    eyed3.log.setLevel("ERROR") #only print errors, not wornings
+
     if files:
         songList=[]
         for fileName in files:
@@ -35,7 +37,7 @@ def maingl(files):
 
             click.echo("Finding lyrics for "+tempArtist+" - "+tempSong)
             lyrics = findlyrics(artist, song)
-            click.echo(lyrics) #Prints lyrics
+            click.echo('\n'+tempArtist.upper()+" - "+tempSong.upper()+" LYRICS\n"+lyrics)
 
     else:
 		artist = raw_input('Enter Artist Name : ')
@@ -43,7 +45,7 @@ def maingl(files):
 		artist=artist.lower().replace(' ','-') #for query purposes
 		song=song.lower().replace(' ','-') #for query purposes
 		lyrics = findlyrics(artist, song)
-		click.echo(lyrics) #Prints lyrics
+		click.echo("\n\n"+lyrics) #Prints lyrics
 
 def findlyrics(artist, song):
     
@@ -76,7 +78,7 @@ def findlyrics(artist, song):
                     mainDiv = div
                     for div in mainDiv.find_all('div'):
                         if not div.has_attr('class'):
-                            return div.text #Returns Lyrics from AZLyrics
+                            return div.text[2:] #Returns Lyrics from AZLyrics
                     break
 
     else:
@@ -109,8 +111,7 @@ def findlyrics(artist, song):
                 click.echo("Couldn't find lyrics on MetroLyrics")
                 return
             else:
-                lyrics = lyrics[:len(lyrics)-2] #Removes \n from the end
-                lyrics = '\n\n'+lyrics #For readability
+                lyrics = lyrics[:len(lyrics)-1] #Removes \n from the end
                 return lyrics
         else:
                 click.echo("Couldn't find lyrics through Google's API")
