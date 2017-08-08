@@ -3,13 +3,50 @@ from bs4 import BeautifulSoup
 import urllib, requests, json, os, eyed3
 
 @click.command()
-def maingl():
+@click.argument('files',nargs=-1, type=click.File('rw'))
+def maingl(files):
     """Welcome to getlyrics.
     
     Enter artist and song name when prompted, and watch the magic happen :)"""
+
+    if files:
+        songList=[]
+        for fileName in files:
+            if fileName.name.endswith(".mp3"):
+                songList.append(fileName.name) #songList contains path of all songs
+
+        for path in songList:
+            try:
+                audio = eyed3.load(path)
+            except ValueError:
+                click.echo("Encoding problem with "+path)
+                continue
+
+            try:
+                artist = audio.tag.artist
+                song = audio.tag.title
+                tempArtist = artist
+                tempSong = song
+                artist=artist.lower().replace(' ','-') #for query purposes
+                song=song.lower().replace(' ','-') #for query purposes
+            except AttributeError:
+                click.echo('Artist/Song information missing for '+path)
+                continue
+
+            click.echo("Finding lyrics for "+tempArtist+" - "+tempSong)
+            lyrics = findlyrics(artist, song)
+            click.echo(lyrics) #Prints lyrics
+
+    else:
+		artist = raw_input('Enter Artist Name : ')
+		song = raw_input('Enter Song Name : ')
+		artist=artist.lower().replace(' ','-') #for query purposes
+		song=song.lower().replace(' ','-') #for query purposes
+		lyrics = findlyrics(artist, song)
+		click.echo(lyrics) #Prints lyrics
+
+def findlyrics(artist, song):
     
-    artist = raw_input('Enter Artist Name : ')
-    song = raw_input('Enter Song Name : ')
     searchUrl='http://search.azlyrics.com/search.php?q='+artist+'+'+song
     searchPage = urllib.urlopen(searchUrl).read()
     searchSoup = BeautifulSoup(searchPage, 'html.parser')
@@ -39,7 +76,7 @@ def maingl():
                     mainDiv = div
                     for div in mainDiv.find_all('div'):
                         if not div.has_attr('class'):
-                            click.echo(div.text) #Prints Lyrics from AZLyrics
+                            return div.text #Returns Lyrics from AZLyrics
                     break
 
     else:
@@ -70,8 +107,11 @@ def maingl():
 
             if not lyricsFound:
                 click.echo("Couldn't find lyrics on MetroLyrics")
+                return
             else:
                 lyrics = lyrics[:len(lyrics)-2] #Removes \n from the end
-                click.echo('\n\n'+lyrics) #For readability
+                lyrics = '\n\n'+lyrics #For readability
+                return lyrics
         else:
                 click.echo("Couldn't find lyrics through Google's API")
+                return
