@@ -5,13 +5,27 @@ import urllib, requests, json, os, eyed3
 @click.command()
 @click.option('-a',is_flag=True,help='If FILES is provided, this option will not ask the user to input artist and song details when it\'s absent in the file\'s metadata. Instead, the file will be skipped')
 @click.option('-l',is_flag=True,help='If FILES is provided, this option will skip songs for which lyrics already exists')
-@click.option('-o',is_flag=True,help='If FILES is provided, this option will suppress the output of the obtained lyrics on to Terminal')
+@click.option('-o',is_flag=True,help='If FILES is provided, this option will suppress the output of the obtained lyrics on to the standard output')
 @click.option('-s',is_flag=True,help='If FILES is provided, this option will save the obtained lyrics in the file\'s metadata')
 @click.argument('files',nargs=-1, type=click.File('rw'))
 def maingl(files,a,l,o,s):
     """Welcome to getlyrics.
     
-    Enter artist and song name when prompted, and watch the magic happen :)"""
+    There are two ways to use this tool :-
+        
+
+        1. getlyrics -> Prompt will ask you for the artist and song name. The obtained lyrics will be printed on the standard output.
+
+        2. getlyrics [FILES] -> Tool will access artist and song information from the metadata of the provided files, and prints the obtained lyrics on the standard output.
+
+    Note : Only mp3 files supported for now. Support for other files coming soon!
+
+    Enjoy! :)
+
+    Use the following options to make the most of this tool :-
+
+    
+    """
 
     eyed3.log.setLevel("ERROR") #only print errors, not wornings
 
