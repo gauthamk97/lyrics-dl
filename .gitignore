@@ -3,3 +3,4 @@ lyrenv/
 .DS_Store
 *.mp3
 *.egg-info
+dist/
