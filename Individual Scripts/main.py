@@ -1,3 +1,5 @@
+#This script iterates through all mp3 files in the current working directory, finds lyrics for them and saves it in the mp3's metadata
+
 from bs4 import BeautifulSoup
 import urllib, requests, json, os, eyed3
 

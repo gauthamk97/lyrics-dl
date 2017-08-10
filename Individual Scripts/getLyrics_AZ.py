@@ -1,3 +1,5 @@
+#Gets lyrics for a single song from AZLyrics
+
 from bs4 import BeautifulSoup
 import urllib, requests, json, os, eyed3
 

@@ -1,3 +1,5 @@
+#Gets lyrics for a single song from the Google API + Metrolyrics
+
 from bs4 import BeautifulSoup
 import urllib
 import requests

@@ -1,3 +1,5 @@
+#This script iterates through all mp3 files in the current working directory, and prints all files which already have lyrics (sorted by artist)
+
 import os, eyed3
 dict={}
 eyed3.log.setLevel("ERROR") #only print errors, not wornings
