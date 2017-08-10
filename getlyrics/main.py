@@ -73,6 +73,8 @@ def maingl(files,a,l,o,s):
                     
             click.echo('Finding lyrics for '+tempArtist+' - '+tempSong)
             lyrics = findlyrics(artist, song)
+            if not lyrics:
+                continue
 
             #Removes newline characters from the beginning of lyrics
             for char in lyrics:
@@ -106,7 +108,8 @@ def maingl(files,a,l,o,s):
 		artist=artist.lower().replace(' ','-') #for query purposes
 		song=song.lower().replace(' ','-') #for query purposes
 		lyrics = findlyrics(artist, song)
-		click.echo("\n\n"+lyrics) #Prints lyrics
+		if lyrics:
+			click.echo("\n\n"+lyrics) #Prints lyrics
 
 def findlyrics(artist, song):
     
@@ -146,7 +149,16 @@ def findlyrics(artist, song):
         #Second Attempt - Google API + Metrolyrics
 
         searchEngineID='013005384117311148169%3A7rehj54nzye'
-        APIKey='AIzaSyAcBWajtXvUDXlv08CtFr7mJamWugAcxmM'
+        APIKey=''
+
+        if not APIKey:
+            click.echo('\ngetlyrics can search metrolyrics for your song, but we need an API Key for a google search engine. \nIf you do not have one, you can obtain one here - https://developers.google.com/custom-search/json-api/v1/introduction?refresh=1.')
+            click.echo('\nIf you have an API Key, enter here. Else, press enter to skip song')
+            APIKey=raw_input('Enter API Key - ')
+
+        if not APIKey:
+            click.echo("No API Key. Couldn't search metrolyrics")
+            return
 
         searchUrl='https://www.googleapis.com/customsearch/v1?q='+artist+'+'+song+'&cx='+searchEngineID+'&num=1&key='+APIKey
         a = requests.get(searchUrl)
