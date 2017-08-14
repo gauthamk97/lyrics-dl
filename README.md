@@ -12,7 +12,8 @@ Support for other formats coming soon!
 ### Installation :-
 1. Clone the repo
 2. Enter the downloaded repo's root directory : `cd getlyrics`
-3. Install getlyrics by running `pip install -e` or `python setup.py install`
+3. Install the required modules and its dependencies by running `pip install -r requirements.txt` (You may want to consider using a virtual environment)
+4. Install getlyrics by running `pip install .` or `python setup.py install`
 
 ### Usage :-
 * Type `getlyrics` to receive prompt for artist and song name

@@ -4,3 +4,4 @@ lyrenv/
 *.mp3
 *.egg-info
 dist/
+build/
