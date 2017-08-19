@@ -9,14 +9,14 @@ import urllib, requests, json, os, eyed3
 @click.option('-s',is_flag=True,help='If FILES is provided, this option will save the obtained lyrics in the file\'s metadata')
 @click.argument('files',nargs=-1, type=click.File('rw'))
 def maingl(files,a,l,o,s):
-    """Welcome to getlyrics.
+    """Welcome to lyrics-dl.
     
     There are two ways to use this tool :-
         
 
-        1. getlyrics -> Prompt will ask you for the artist and song name. The obtained lyrics will be printed on the standard output.
+        1. lyrics-dl -> Prompt will ask you for the artist and song name. The obtained lyrics will be printed on the standard output.
 
-        2. getlyrics [FILES] -> Tool will access artist and song information from the metadata of the provided files, and prints the obtained lyrics on the standard output.
+        2. lyrics-dl [FILES] -> Tool will access artist and song information from the metadata of the provided files, and prints the obtained lyrics on the standard output.
 
     Note : Only mp3 files supported for now. Support for other files coming soon!
 
