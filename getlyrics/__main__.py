@@ -109,7 +109,7 @@ def maingl(files,a,l,o,s):
 		song=song.lower().replace(' ','-') #for query purposes
 		lyrics = findlyrics(artist, song)
 		if lyrics:
-			click.echo("\n\n"+lyrics) #Prints lyrics
+			click.echo(lyrics) #Prints lyrics
 
 def findlyrics(artist, song):
     
@@ -146,45 +146,4 @@ def findlyrics(artist, song):
                     break
 
     else:
-        #Second Attempt - Google API + Metrolyrics
-
-        searchEngineID='013005384117311148169%3A7rehj54nzye'
-        APIKey=''
-
-        if not APIKey:
-            click.echo('\ngetlyrics can search metrolyrics for your song, but we need an API Key for a google search engine. \nIf you do not have one, you can obtain one here - https://developers.google.com/custom-search/json-api/v1/introduction?refresh=1.')
-            click.echo('\nIf you have an API Key, enter here. Else, press enter to skip song')
-            APIKey=raw_input('Enter API Key - ')
-
-        if not APIKey:
-            click.echo("No API Key. Couldn't search metrolyrics")
-            return
-
-        searchUrl='https://www.googleapis.com/customsearch/v1?q='+artist+'+'+song+'&cx='+searchEngineID+'&num=1&key='+APIKey
-        a = requests.get(searchUrl)
-        b = json.loads(a.text)
-
-        if b.has_key('items'):
-            url = b['items'][0]['link']
-
-            mainPage=urllib.urlopen(url).read()
-            soup = BeautifulSoup(mainPage, 'html.parser')
-
-            for div in soup.find_all('div'):
-                if div.has_attr('id'):
-                    if div['id']=='lyrics-body-text':
-                        lyricsFound=True
-                        mainDiv=div
-                        for para in mainDiv.find_all('p'):
-                            lyrics+=para.text
-                            lyrics+='\n\n'
-                        break
-
-            if not lyricsFound:
-                click.echo("Couldn't find lyrics on MetroLyrics")
-                return
-            else:
-                return lyrics
-        else:
-                click.echo("Couldn't find lyrics through Google's API")
-                return
+        return
