@@ -3,7 +3,7 @@ with open("README.rst", "rb") as f:
     long_descr = f.read().decode('utf-8')
 
 setup(
-    name="getlyrics",
+    name="lyrics-dl",
     version="1.0.3",
     description='A tool to obtain the lyrics to your favorite songs',
     author='Gautham Kumar',
@@ -14,6 +14,6 @@ setup(
     packages=["getlyrics"],
     install_requires=["Click"],
     entry_points= {
-        "console_scripts" : ['getlyrics=getlyrics.__main__:maingl']
+        "console_scripts" : ['lyrics-dl=getlyrics.__main__:maingl']
     }
 )
