@@ -9,4 +9,4 @@ requests==2.18.3
 scandir==1.5
 six==1.10.0
 urllib==1.21.1
-urllib3==1.22
+urllib3==1.26.5
